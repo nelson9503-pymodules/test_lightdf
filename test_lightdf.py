@@ -26,7 +26,7 @@ class Testlightdf(unittest.TestCase):
         df.delete(2)
         keys = df.list_keys()
         assert keys == [1], "Delete Row Failed."
-    
+
     def test_drop_col(self):
         df = lightdf.Dataframe("id", int)
         df.add_col("name", str)
@@ -34,7 +34,7 @@ class Testlightdf(unittest.TestCase):
         df.drop_col("name")
         cols = df.list_col()
         assert cols == ["gender"], "Drop Col Failed."
-    
+
     def test_change_column_type(self):
         df = lightdf.Dataframe("id", int)
         df.add_col("name", str)
@@ -44,7 +44,7 @@ class Testlightdf(unittest.TestCase):
         df.set_col_type("name", int)
         types = df.list_col_type()
         assert types == [int, str], "Change column Failed."
-    
+
     def test_change_key_cols(self):
         df = lightdf.Dataframe("id", int)
         df.add_col("name", str)
@@ -77,7 +77,7 @@ class Testlightdf(unittest.TestCase):
         d = df.read(2, "name")
         assert d == "John", "Read CSV Failed."
         os.remove("test.csv")
-    
+
     def test_to_from_dict(self):
         df = lightdf.Dataframe("id", int)
         df.add_col("name", str)
@@ -95,10 +95,28 @@ class Testlightdf(unittest.TestCase):
         df.from_dict(dictionary)
         d = df.read(1, "name")
         assert d == "Nelson", "From Dict Failed."
-    
+
+    def test_from_dataframe(self):
+        df = lightdf.Dataframe("id", int)
+        df.add_col("name", str)
+        df.add_col("gender", str)
+        df.write(1, "name", "Nelson")
+        df.write(1, "gender", "M")
+        df.write(2, "name", "John")
+        df.write(2, "gender", "M")
+        df2 = lightdf.Dataframe("id", int)
+        df2.add_col("name", str)
+        df2.add_col("gender", str)
+        df2.write(1, "name", "NelsonLai")
+        df2.write(1, "gender", "M")
+        df2.write(3, "name", "Mary")
+        df2.write(3, "gender", "F")
+        df.join_dataframe(df2)
+
     def tearDown(self):
         if os.path.exists("test.csv"):
             os.remove("test.csv")
+
 
 if __name__ == "__main__":
     unittest.main()
